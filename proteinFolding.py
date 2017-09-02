@@ -1,8 +1,5 @@
 ''' protein-folding
 
-The python code is used to solve protein-folding problem in Assignment 1 
-of COMP 557.
-
 Protein-folding problem requires to find the folding structure of a given 
 protein sequence with minimum free energy.
 
