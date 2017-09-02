@@ -1,5 +1,4 @@
-''' protein-folding
-
+''' 
 Protein-folding problem requires to find the folding structure of a given 
 protein sequence with minimum free energy.
 
