@@ -13,7 +13,7 @@ consider the folding after which the free energy of structure becomes lower.
 This also lead to the consequence that global minimum might not be found by 
 the algorithm.
 
-Greedy Alogorithm:
+Greedy Algorithm:
 The algorithm is, from initial structure, consider those folding actions 
 that decrease free energy, push these strctures in a min-heap, with free 
 energy as priority. Each time select the state at the top of min-heap and 
@@ -26,7 +26,7 @@ controlling maximum number od accepted children. At each expand, randomly
 select successors with constraint on number. A min-heap is maintained here 
 to provide the most promising candidate each time.
 
-Simulated Annealing Algotithm:
+Simulated Annealing Algorithm:
 The probability of making a downhill move is higher when T is higher, and 
 is lower as T comes down. At high temperatures simulated annealing performs 
 a random walk, while at lower temperatures, it is a stochastic hill climber.
@@ -252,7 +252,7 @@ class RandomGreedyAlgorithm(Algorithm):
 
         return minEnergyAndState
 
-class SimulatedAnnealingAlgotithm(Algorithm):
+class SimulatedAnnealingAlgorithm(Algorithm):
     def __init__(self, problem, maxIter=100000):
         Algorithm.__init__(self, problem, maxIter)
 
