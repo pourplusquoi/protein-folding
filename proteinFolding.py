@@ -327,6 +327,8 @@ class GeneticAlgorithm(Algorithm):
                     stateA, stateB = self.crossOver(pq[i][1], pq[j][1])
                     newNums = [self.mutate(stateA), self.mutate(stateB)]
                     for newStateNum in newNums:
+
+                        # avoid revisit
                         if newStateNum in visited:
                             continue
 
