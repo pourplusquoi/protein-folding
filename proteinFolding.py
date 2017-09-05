@@ -140,7 +140,8 @@ class ProteinFoldingProblem():
 
         for i in range(2, len(self.sequence)):
             for j in np.array([1, np.complex(0, 1), -1, np.complex(0, -1)]):
-                if j == state[i] or j == -state[i - 1]:
+                if j == state[i] or j == -state[i - 1] or \
+                    (i + 1 < len(self.sequence) and j == -state[i + 1]):
                     continue
 
                 newState = np.copy(state)
@@ -354,4 +355,4 @@ class GeneticAlgorithm(Algorithm):
 
 if __name__ == '__main__':
     sequence = np.array([0,0,1,1,1,0,0,0,0,1,1,0,0,0,0,1,1,1,1,1,1,1,1,1,0,0,0,1,1,0,0,0,0,0])
-    RandomGreedyAlgorithm(ProteinFoldingProblem(sequence)).solve()
+    GeneticAlgorithm(ProteinFoldingProblem(sequence)).solve()
