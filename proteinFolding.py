@@ -295,7 +295,7 @@ class GeneticAlgorithm(Algorithm):
         self.population = population
         self.mutationRate = mutationRate
 
-    # Makes parent genes cross over at random position
+    # Makes parent genes cross over at random position.
     def crossOver(self, stateA, stateB):
         coordA = self.problem.decode(stateA)
         coordB = self.problem.decode(stateB)
@@ -306,7 +306,7 @@ class GeneticAlgorithm(Algorithm):
         coordB = np.concatenate((coordB[0: pointIdx], temp[pointIdx:]))
         return coordA, coordB
 
-    # Makes child gene mutate with given possibility
+    # Makes child gene mutate with given possibility.
     def mutate(self, coord):
         flip = np.random.rand(len(coord)) < self.mutationRate
         opts = [1, np.complex(0, 1), -1, np.complex(0, -1)]
