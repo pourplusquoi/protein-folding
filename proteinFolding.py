@@ -289,7 +289,7 @@ class SimulatedAnnealingAlgorithm(Algorithm):
 class GeneticAlgorithm(Algorithm):
     # self.population: the population upper bound of mating pool
     # self.mutationRate: the possibility that each entry of gene mutates
-    def __init__(self, problem, population=12, mutationRate=0.1, \
+    def __init__(self, problem, population=10, mutationRate=0.1, \
             maxIter=100000):
         Algorithm.__init__(self, problem, maxIter)
         self.population = population
@@ -311,7 +311,7 @@ class GeneticAlgorithm(Algorithm):
         flip = np.random.rand(len(coord)) < self.mutationRate
         opts = [1, np.complex(0, 1), -1, np.complex(0, -1)]
         
-        for i in range(len(flip)):
+        for i in range(1, len(flip)):
             if flip[i] == True:
                 coord[i] = opts[np.int(np.random.rand()*4)]
 
@@ -341,10 +341,11 @@ class GeneticAlgorithm(Algorithm):
                         if newEnergy is not None:
                             heapq.heappush(pq, (newEnergy, newStateNum))
 
-            minEnergyAndState = pq[0]
-            print minEnergyAndState[0], '\n', Protein(self.problem.sequence, 
-                self.problem.decode(minEnergyAndState[1])).toString(), '\n', \
-                '------------------------------'
+            if pq[0][0] < minEnergyAndState[0]:
+                minEnergyAndState = pq[0]
+                print minEnergyAndState[0], '\n', Protein(self.problem.sequence, 
+                    self.problem.decode(minEnergyAndState[1])).toString(), \
+                    '\n', '------------------------------'
 
             aux = []
             for i in range(min(len(pq), self.population)):
