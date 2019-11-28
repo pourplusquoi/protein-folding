@@ -13,29 +13,30 @@ This also lead to the consequence that global minimum might not be found by
 the algorithm.
 
 Greedy Algorithm:
-The algorithm is, from initial structure, consider those folding actions 
-that decrease free energy, push these strctures in a min-heap, with free 
-energy as priority. Each time select the state at the top of min-heap and 
-expand. Repeat until min-heap becomes empty or time is up. Return the 
-folding structure with lowest free energy among all of visited structures.
+  The algorithm is, from initial structure, consider those folding actions 
+  that decrease free energy, push these strctures in a min-heap, with free 
+  energy as priority. Each time select the state at the top of min-heap and 
+  expand. Repeat until min-heap becomes empty or time is up. Return the 
+  folding structure with lowest free energy among all of visited structures.
 
 Radom Greedy Algorithm:
-Similar to Greedy Algorithm, with extra hyper-parameter 'self.numChild' 
-controlling maximum number od accepted children. At each expand, randomly 
-select successors with constraint on number. A min-heap is maintained here 
-to provide the most promising candidate each time.
+  Similar to Greedy Algorithm, with extra hyper-parameter 'self.numChild' 
+  controlling maximum number od accepted children. At each expand, randomly 
+  select successors with constraint on number. A min-heap is maintained 
+  here to provide the most promising candidate each time.
 
 Simulated Annealing Algorithm:
-The probability of making a downhill move is higher when T is higher, and 
-is lower as T comes down. At high temperatures simulated annealing performs 
-a random walk, while at lower temperatures, it is a stochastic hill climber.
+  The probability of making a downhill move is higher when T is higher, and 
+  is lower as T comes down. At high temperatures simulated annealing 
+  performs a random walk, while at lower temperatures, it is a stochastic 
+  hill climber.
 
 Genetic Algorithm:
-The algorithm is based on the mechanics of natural selection. A mating pool 
-with population upper bound is kept. Each time, every pair reproduce a 
-descendent at random, two genes corss over at random position, and the new 
-gene mutates with given probability. Each time, those folding structures 
-with lower free energy are kept, others are abandoned.
+  The algorithm is based on the mechanics of natural selection. A mating 
+  pool with population upper bound is kept. Each time, every pair reproduce 
+  a descendent at random, two genes corss over at random position, and the 
+  new gene mutates with given probability. Each time, those folding 
+  structures with lower free energy are kept, others are abandoned.
 
 Note that the lowest free energy in record decreases monotonically, and it 
 has lower bound. Therefore, all of these algorithms guarantee that the 
@@ -46,15 +47,17 @@ unlimited.
 import heapq
 import numpy as np
 
+
 class Protein:
-    # self.sequence: the acid sequence
-    # self.relative: the coordinate of acid relative to the previoud acid
-    #                on complex plane
+
+    # self.sequence: The acid sequence.
+    # self.relative: The coordinate of acid relative to the previoud acid
+    #                on complex plane.
     def __init__(self, sequence, relative):
         self.sequence = sequence
         self.relative = relative
 
-    # Calculate the absolute coordinate of acid on complex plane.
+    # Calculates the absolute coordinate of acid on complex plane.
     def calcAbsCoords(self):
         absolute = np.cumsum(self.relative)
         pointSet = set()
@@ -64,7 +67,7 @@ class Protein:
             pointSet.add(pt)
         return absolute
 
-    # Calculate the free energy of a protein with specific folding structure.
+    # Calculates the free energy of a protein with specific folding structure.
     def calcEnergy(self):
         absolute = self.calcAbsCoords()
         if absolute is None:
@@ -80,7 +83,7 @@ class Protein:
         return np.sum(np.abs(np.repeat(hydro, numHydro, 0) \
             - np.repeat(hydro.T, numHydro, 1))) / 2
 
-    # Convert the protein folding structure into string.
+    # Converts the protein folding structure into string.
     def toString(self):
         absolute = self.calcAbsCoords()
         real, imag = np.array(np.round(absolute.real), dtype = int), \
@@ -119,12 +122,14 @@ class Protein:
 
         return string
 
+
 class ProteinFoldingProblem():
-    # self.sequence: sequence of the protein that problem is dealing with
+
+    # self.sequence: Sequence of the protein that problem is dealing with.
     def __init__(self, sequence):
         self.sequence = sequence
 
-    # Determine the start state of search.
+    # Determines the start state of search.
     def startEnergyAndState(self):
         zero, one = np.complex(0, 0), np.complex(1, 0)
         initState = np.concatenate(([zero], 
@@ -133,7 +138,7 @@ class ProteinFoldingProblem():
         return (Protein(self.sequence, initState).calcEnergy(), 
             self.encode(initState))
 
-    # Determine the successor states and the free energy of successor states.
+    # Determines the successor states and the free energy of successor states.
     def succAndEnergy(self, energyAndState, visited, option=0):
         succAndEnergyArray = []
         energy, state = energyAndState[0], self.decode(energyAndState[1])
@@ -159,7 +164,7 @@ class ProteinFoldingProblem():
         
         return succAndEnergyArray
 
-    # A helper function to encode a state (array) into a integer.
+    # A helper function that encodes a state (array) into a integer.
     def encode(self, array):
         array = ((array == np.complex(0, 1))*1 + (array == -1)*2 + \
             (array == np.complex(0, -1))*3).tolist()
@@ -170,7 +175,7 @@ class ProteinFoldingProblem():
             num = num * 4 + array[i]
         return num
 
-    # A helper function to decode a integer back into state.
+    # A helper function that decodes a integer back into state.
     def decode(self, num):
         array = [-1]
         for i in range(1, len(self.sequence)):
@@ -181,11 +186,12 @@ class ProteinFoldingProblem():
         return (array == 0)*1 + (array == 1)*np.complex(0, 1) + \
             (array == 2)*(-1) + (array == 3)*np.complex(0, -1)
 
-    
+
 class Algorithm():
-    # This is an abstract class.
-    # self.problem: the folding problem that needs solving
-    # self.maxIter: the maximum iteration of algorithm
+    '''This is an abstract class.'''
+
+    # self.problem: The folding problem that needs solving.
+    # self.maxIter: The maximum iteration of algorithm.
     def __init__(self, problem, maxIter):
         self.problem = problem
         self.maxIter = maxIter
@@ -193,7 +199,10 @@ class Algorithm():
     def solve(self):
         raise NotImplementedError("Override me")
 
+
 class GreedyAlgorithm(Algorithm):
+    '''Greedy algorithm implementation.'''
+
     def __init__(self, problem, maxIter=100000):
         Algorithm.__init__(self, problem, maxIter)
 
@@ -221,8 +230,11 @@ class GreedyAlgorithm(Algorithm):
 
         return minEnergyAndState
 
+
 class RandomGreedyAlgorithm(Algorithm):
-    # self.numChild: the maximum number of selected children at each expand
+    '''Random greedy algorithm implementation.'''
+
+    # self.numChild: The maximum number of selected children at each expand.
     def __init__(self, problem, numChild=2, maxIter=100000):
         Algorithm.__init__(self, problem, maxIter)
         self.numChild = numChild
@@ -253,7 +265,10 @@ class RandomGreedyAlgorithm(Algorithm):
 
         return minEnergyAndState
 
+
 class SimulatedAnnealingAlgorithm(Algorithm):
+    '''Simulated annealing algorithm implementation.'''
+
     def __init__(self, problem, maxIter=100000):
         Algorithm.__init__(self, problem, maxIter)
 
@@ -286,9 +301,12 @@ class SimulatedAnnealingAlgorithm(Algorithm):
         
         return minEnergyAndState
 
+
 class GeneticAlgorithm(Algorithm):
-    # self.population: the population upper bound of mating pool
-    # self.mutationRate: the possibility that each entry of gene mutates
+    '''Genetic algorithm implementation.'''
+
+    # self.population: The population upper bound of mating pool.
+    # self.mutationRate: The possibility that each entry of gene mutates.
     def __init__(self, problem, population=10, mutationRate=0.1, \
             maxIter=100000):
         Algorithm.__init__(self, problem, maxIter)
@@ -353,6 +371,7 @@ class GeneticAlgorithm(Algorithm):
             pq = aux
 
         return minEnergyAndState
+
 
 if __name__ == '__main__':
     sequence = np.array([0,0,1,1,1,0,0,0,0,1,1,0,0,0,0,1,1,1,1,1,1,1,1,1,0,0,0,1,1,0,0,0,0,0])
