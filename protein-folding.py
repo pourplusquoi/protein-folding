@@ -1,5 +1,4 @@
-'''
-The python code is used to solve protein-folding problem in Assignment 1 
+'''The python code is used to solve protein-folding problem in Assignment 1
 of COMP 557.
 
 Protein-folding problem requires to find the folding structure of a given 
@@ -41,7 +40,8 @@ with lower free energy are kept, others are abandoned.
 Note that the lowest free energy in record decreases monotonically, and it 
 has lower bound. Therefore, all of these algorithms guarantee that the 
 lowest free energy would converge on some positive value, if the time were 
-unlimited.'''
+unlimited.
+'''
 
 import heapq
 import numpy as np
